@@ -7,24 +7,21 @@ from matplotlib import pyplot as plt
 
 from google.colab import drive
 drive.mount('/content/drive')
-coco = '/content/drive/My Drive/COCO_Data/result.json'
+coco = '/content/drive/My Drive/COCO_Data/grid/result.json'
 coco=COCO(coco)
-
 cat_ids = coco.getCatIds()
-print(cat_ids)
+for i in range(50):
+  image_id = i
+  img = coco.imgs[image_id]
 
-image_id = 10
-img = coco.imgs[image_id]
-print(img['file_name'])
+  print(img['file_name'][81:-4])
 
-anns_ids = coco.getAnnIds(imgIds=img['id'], catIds=cat_ids, iscrowd=None)
-anns = coco.loadAnns(anns_ids)
-anns_img = np.zeros((img['height'],img['width']))
-for ann in anns:
-    anns_img = np.maximum(anns_img,coco.annToMask(ann)*ann['category_id'])
+  anns_ids = coco.getAnnIds(imgIds=img['id'], catIds=cat_ids, iscrowd=None)
+  anns = coco.loadAnns(anns_ids)
+  anns_img = np.zeros((img['height'],img['width']))
+  for ann in anns:
+      anns_img = np.maximum(anns_img,coco.annToMask(ann)*ann['category_id'])
 
 
-save_path = '/content/drive/My Drive/COCO_Data/masks'
-plt.imsave(os.path.join(save_path,str(image_id)+".png"),anns_img)
-plt.imshow(anns_img)
-plt.show()
+  save_path = '/content/drive/My Drive/COCO_Data/masks'
+  plt.imsave(os.path.join(save_path,str(img['file_name'][81:-4])+".png"),anns_img)
